@@ -5,6 +5,11 @@
 import smtpd
 import asyncore
 import time
+import os
+
+
+def get_line(search, string):
+    return [line for line in string.split('\n') if search in line][0]
 
 class FakeSMTPServer(smtpd.SMTPServer):
     """A Fake smtp server"""
@@ -14,8 +19,11 @@ class FakeSMTPServer(smtpd.SMTPServer):
         smtpd.SMTPServer.__init__(*args, **kwargs)
 
     def process_message(*args, **kwargs):
-        mail = open("mails/"+str(time.time())+".eml", "w")
-        print "New mail from " + args[2]
+        userhome = os.path.expanduser('~')
+        desktop = userhome + '/Desktop/'
+        subject = get_line('Subject', args[4])[9:]
+        mail = open("C:/Test Emails/"+str(subject)+".eml", "w")
+        print subject
         mail.write(args[4])
         mail.close
         pass
